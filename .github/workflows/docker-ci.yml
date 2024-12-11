@@ -3,7 +3,7 @@ name: CI/CD Pipeline for NGINX Docker Container
 on:
   push:
     paths:
-      - index.html  # Este pipeline solo se ejecutará cuando el index.html cambie
+      - '3-CICD/index.html'
 
 jobs:
   build-and-push:
