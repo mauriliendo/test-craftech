@@ -32,3 +32,15 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+      # Paso 5: Desplegar la imagen en AWS ECS
+      - name: Deploy to AWS ECS
+        uses: jakejarvis/ecs-deploy-action@v1
+        with:
+          cluster: testing  # Nombre del cluster ECS
+          service: my-nginx-service # Nombre del servicio ECS
+          task-definition: my-nginx-task # Definición de la tarea en ECS
+          region: us-east-1         # Región de AWS
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}    
