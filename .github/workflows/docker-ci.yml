@@ -35,7 +35,7 @@ jobs:
 
       # Paso 5: Desplegar la imagen en AWS ECS
       - name: Deploy to AWS ECS
-        uses: jakejarvis/ecs-deploy-action@v1
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           cluster: testing  # Nombre del cluster ECS
           service: my-nginx-service # Nombre del servicio ECS
