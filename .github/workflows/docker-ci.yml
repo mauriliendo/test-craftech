@@ -31,16 +31,19 @@ jobs:
           docker push $DOCKER_USERNAME/my-nginx-image:latest
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }} 
+      
+      # Paso 5: Desplegar en AKS
+      - name: Set up Azure CLI
+        uses: azure/setup-azurecli@v1
 
-      # Paso 5: Desplegar la imagen en AWS ECS
-      - name: Deploy to AWS ECS
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          cluster: testing  # Nombre del cluster ECS
-          service: my-nginx-service # Nombre del servicio ECS
-          task-definition: my-nginx-task # Definición de la tarea en ECS
-          region: us-east-1         # Región de AWS
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}    
+      - name: Authenticate with Azure
+        run: az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+
+      - name: Get AKS credentials
+        run: az aks get-credentials --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} --name ${{ secrets.AKS_CLUSTER_NAME }}
+
+      - name: Deploy to AKS
+        run: |
+          kubectl apply -f kubernetes/deployment.yaml
+          kubectl apply -f kubernetes/service.yaml       
