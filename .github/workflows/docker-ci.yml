@@ -42,17 +42,16 @@ jobs:
       - name: Authenticate with Azure
         run: az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
 
-      # Paso 7: Obtener credenciales del clúster de AKS
+      # Paso 7: Obtener credenciales del cluster de AKS
       - name: Get AKS credentials
         run: az aks get-credentials --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} --name ${{ secrets.AKS_CLUSTER_NAME }}
 
-      # Paso 8: Crear el namespace si no existe
-      - name: Create Kubernetes namespace
+      # Paso 8: Deploy kubernetes
+      - name: Deploy to AKS
+        env:
+          DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/my-nginx-image:latest
         run: |
           kubectl create namespace nginx || echo "Namespace already exists"
-
-      # Paso 9: Desplegar en AKS
-      - name: Deploy to AKS
-        run: |
+          sed -i "s|DOCKER_IMAGE|$DOCKER_IMAGE|g" 3-CICD/kubernetes/deployment.yaml
           kubectl apply -f 3-CICD/kubernetes/deployment.yaml
           kubectl apply -f 3-CICD/kubernetes/service.yaml

@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-deployment
+  namespace: nginx
 spec:
   replicas: 1
   selector:
@@ -14,6 +15,6 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: $DOCKER_USERNAME/my-nginx-image:latest
+        image: DOCKER_IMAGE
         ports:
         - containerPort: 80
