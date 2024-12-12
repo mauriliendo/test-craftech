@@ -3,7 +3,7 @@ name: CI/CD Pipeline for NGINX Docker Container
 on:
   push:
     paths:
-      - '3-CICD/index.html' # Ruta al archivo específico
+      - '3-CICD/index.html'
 
 jobs:
   build:
@@ -31,19 +31,28 @@ jobs:
           docker push $DOCKER_USERNAME/my-nginx-image:latest
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }} 
-      
-      # Paso 5: Desplegar en AKS
-      - name: Set up Azure CLI
-        uses: azure/cli-action@v1
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
+      # Paso 5: Instalar Azure CLI manualmente
+      - name: Install Azure CLI
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+      # Paso 6: Autenticarse en Azure
       - name: Authenticate with Azure
         run: az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
 
+      # Paso 7: Obtener credenciales del clúster de AKS
       - name: Get AKS credentials
         run: az aks get-credentials --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} --name ${{ secrets.AKS_CLUSTER_NAME }}
 
+      # Paso 8: Crear el namespace si no existe
+      - name: Create Kubernetes namespace
+        run: |
+          kubectl create namespace my-custom-namespace || echo "Namespace already exists"
+
+      # Paso 9: Desplegar en AKS
       - name: Deploy to AKS
         run: |
           kubectl apply -f kubernetes/deployment.yaml
-          kubectl apply -f kubernetes/service.yaml       
+          kubectl apply -f kubernetes/service.yaml
