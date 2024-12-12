@@ -46,6 +46,10 @@ jobs:
       - name: Get AKS credentials
         run: az aks get-credentials --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} --name ${{ secrets.AKS_CLUSTER_NAME }}
 
+      - name: Check if kubernetes/deployment.yaml exists
+        run: |
+          if [ -f kubernetes/deployment.yaml ]; then echo "File exists"; else echo "File does not exist"; fi  
+
       # Paso 8: Crear el namespace si no existe
       - name: Create Kubernetes namespace
         run: |
