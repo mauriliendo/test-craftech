@@ -49,7 +49,7 @@ jobs:
       # Paso 8: Crear el namespace si no existe
       - name: Create Kubernetes namespace
         run: |
-          kubectl create namespace my-custom-namespace || echo "Namespace already exists"
+          kubectl create namespace nginx || echo "Namespace already exists"
 
       # Paso 9: Desplegar en AKS
       - name: Deploy to AKS
