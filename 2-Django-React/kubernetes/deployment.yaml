@@ -105,7 +105,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  storageClassName: default
+  storageClassName: django
 
 ---
 apiVersion: v1
@@ -118,7 +118,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Delete
-  storageClassName: default
+  storageClassName: django
   azureFile:
     secretName: azure-secret
     shareName: your-share-name
