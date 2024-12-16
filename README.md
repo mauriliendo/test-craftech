@@ -1,6 +1,6 @@
 # **Proyecto de Prueba Técnica**
 
-Este repositorio contiene una solución que incluye varios componentes clave de infraestructura y desarrollo. El objetivo es proporcionar una implementación de una aplicación web completa, junto con un sistema de CI/CD automatizado y despliegue utilizando Docker y Docker Compose.
+Este repositorio contiene una solución que incluye varios componentes clave de infraestructura y desarrollo. El objetivo es proporcionar una implementación de una aplicación web completa, junto con un sistema de CI/CD automatizado y despliegue utilizando Docker y Kubernetes.
 
 ---
 
@@ -64,12 +64,6 @@ El pipeline se ha configurado para ejecutarse en una plataforma de CI de elecci�
    ```bash
    docker-compose up --build
    ```
-
----
-
-## **Diagrama de Red**
-
-El diagrama está disponible en la carpeta `/diagrams` del repositorio.
 
 ---
 
