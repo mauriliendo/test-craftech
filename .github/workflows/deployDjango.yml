@@ -1,5 +1,3 @@
-name: CI/CD Pipeline for Django and React Docker Container
-
 on:
   push:
     paths:
@@ -21,18 +19,17 @@ jobs:
       # Paso 3: Construir la imagen de Docker
       - name: Build the Docker image
         run: |
-          TAG=$(date +%s)
-          echo "Using tag: $TAG"
-          docker build -f 2-Django-React/frontend/Dockerfile -t my-frontend-image:$TAG 2-Django-React/
-          docker build -f 2-Django-React/backend/Dockerfile -t my-backend-image:$TAG 2-Django-React/
-          echo "TAG=$TAG" >> $GITHUB_ENV
+          docker build -f 2-Django-React/frontend/Dockerfile -t my-frontend-image 2-Django-React/
+          docker build -f 2-Django-React/backend/Dockerfile -t my-backend-image 2-Django-React/
       
       # Paso 4: Publicar la imagen
       - name: Push Docker image to Docker Hub
         run: |
           echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
-          docker push ${{ secrets.DOCKER_USERNAME }}/my-frontend-image:${{ env.TAG }}
-          docker push ${{ secrets.DOCKER_USERNAME }}/my-backend-image:${{ env.TAG }}
+          docker tag my-frontend-image $DOCKER_USERNAME/my-frontend-image:latest
+          docker tag my-backend-image $DOCKER_USERNAME/my-backend-image:latest
+          docker push $DOCKER_USERNAME/my-frontend-image:latest
+          docker push $DOCKER_USERNAME/my-backend-image:latest
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -53,11 +50,12 @@ jobs:
       # Paso 8: Deploy kubernetes
       - name: Deploy to AKS
         env:
-          FRONTEND_IMAGE: ${{ secrets.DOCKER_USERNAME }}/my-frontend-image:${{ env.TAG }}
-          BACKEND_IMAGE: ${{ secrets.DOCKER_USERNAME }}/my-backend-image:${{ env.TAG }}
+          FRONTEND_IMAGE: ${{ secrets.DOCKER_USERNAME }}/my-frontend-image:latest
+          BACKEND_IMAGE: ${{ secrets.DOCKER_USERNAME }}/my-backend-image:latest
         run: |
           kubectl create namespace django || echo "Namespace already exists"
           sed -i "s|FRONTEND_IMAGE|$FRONTEND_IMAGE|g" 2-Django-React/kubernetes/deployment.yaml
           sed -i "s|BACKEND_IMAGE|$BACKEND_IMAGE|g" 2-Django-React/kubernetes/deployment.yaml
           kubectl apply -f 2-Django-React/kubernetes/deployment.yaml
           kubectl apply -f 2-Django-React/kubernetes/service.yaml
+          kubectl rollout restart deployment -n django
