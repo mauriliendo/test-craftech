@@ -31,9 +31,8 @@ jobs:
       - name: Push Docker image to Docker Hub
         run: |
           echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
-          docker images
-          docker push $DOCKER_USERNAME/my-frontend-image:${{ env.TAG }}
-          docker push $DOCKER_USERNAME/my-backend-image:${{ env.TAG }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/my-frontend-image:${{ env.TAG }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/my-backend-image:${{ env.TAG }}
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
