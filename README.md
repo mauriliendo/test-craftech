@@ -67,27 +67,6 @@ El pipeline se ha configurado para ejecutarse en una plataforma de CI de elecci�
 
 ---
 
-## **Contribución**
-
-Las contribuciones son bienvenidas. Si deseas contribuir, por favor sigue estos pasos:
-
-1. Haz un fork del repositorio.
-2. Crea una rama para tu funcionalidad o bugfix:
-   ```bash
-   git checkout -b feature/nueva-funcionalidad
-   ```
-3. Haz un commit de tus cambios:
-   ```bash
-   git commit -m "Agrega una nueva funcionalidad"
-   ```
-4. Sube los cambios a tu rama:
-   ```bash
-   git push origin feature/nueva-funcionalidad
-   ```
-5. Abre un pull request.
-
----
-
 ## **Licencia**
 
 Este proyecto está licenciado bajo la [MIT License](LICENSE).

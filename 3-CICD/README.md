@@ -48,27 +48,6 @@ El flujo de trabajo `deployNginx` puede ser modificado para ajustarse a otras pl
 
 ---
 
-## **Contribución**
-
-Las contribuciones son bienvenidas. Si deseas realizar mejoras o adaptaciones, sigue estos pasos:
-
-1. Haz un fork del repositorio.
-2. Crea una rama para tu funcionalidad o bugfix:
-   ```bash
-   git checkout -b feature/nueva-funcionalidad
-   ```
-3. Realiza tus cambios y haz un commit:
-   ```bash
-   git commit -m "Agrega una nueva funcionalidad"
-   ```
-4. Sube los cambios a tu rama:
-   ```bash
-   git push origin feature/nueva-funcionalidad
-   ```
-5. Abre un pull request.
-
----
-
 ## **Licencia**
 
 Este proyecto está licenciado bajo la [MIT License](LICENSE).
