@@ -22,6 +22,7 @@ jobs:
       - name: Build the Docker image
         run: |
           TAG=$(date +%s)
+          echo "Using tag: $TAG"
           docker build -f 2-Django-React/frontend/Dockerfile -t my-frontend-image:$TAG 2-Django-React/
           docker build -f 2-Django-React/backend/Dockerfile -t my-backend-image:$TAG 2-Django-React/
           echo "TAG=$TAG" >> $GITHUB_ENV
@@ -30,6 +31,7 @@ jobs:
       - name: Push Docker image to Docker Hub
         run: |
           echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
+          docker images
           docker push $DOCKER_USERNAME/my-frontend-image:${{ env.TAG }}
           docker push $DOCKER_USERNAME/my-backend-image:${{ env.TAG }}
         env:
