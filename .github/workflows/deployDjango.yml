@@ -21,17 +21,17 @@ jobs:
       # Paso 3: Construir la imagen de Docker
       - name: Build the Docker image
         run: |
-          docker build -f 2-Django-React/frontend/Dockerfile -t my-frontend-image 2-Django-React/
-          docker build -f 2-Django-React/backend/Dockerfile -t my-backend-image 2-Django-React/
+          TAG=$(date +%s)
+          docker build -f 2-Django-React/frontend/Dockerfile -t my-frontend-image:$TAG 2-Django-React/
+          docker build -f 2-Django-React/backend/Dockerfile -t my-backend-image:$TAG 2-Django-React/
+          echo "TAG=$TAG" >> $GITHUB_ENV
       
       # Paso 4: Publicar la imagen
       - name: Push Docker image to Docker Hub
         run: |
           echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
-          docker tag my-frontend-image $DOCKER_USERNAME/my-frontend-image:latest
-          docker tag my-backend-image $DOCKER_USERNAME/my-backend-image:latest
-          docker push $DOCKER_USERNAME/my-frontend-image:latest
-          docker push $DOCKER_USERNAME/my-backend-image:latest
+          docker push $DOCKER_USERNAME/my-frontend-image:${{ env.TAG }}
+          docker push $DOCKER_USERNAME/my-backend-image:${{ env.TAG }}
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -52,8 +52,8 @@ jobs:
       # Paso 8: Deploy kubernetes
       - name: Deploy to AKS
         env:
-          FRONTEND_IMAGE: ${{ secrets.DOCKER_USERNAME }}/my-frontend-image:latest
-          BACKEND_IMAGE: ${{ secrets.DOCKER_USERNAME }}/my-backend-image:latest
+          FRONTEND_IMAGE: ${{ secrets.DOCKER_USERNAME }}/my-frontend-image:${{ env.TAG }}
+          BACKEND_IMAGE: ${{ secrets.DOCKER_USERNAME }}/my-backend-image:${{ env.TAG }}
         run: |
           kubectl create namespace django || echo "Namespace already exists"
           sed -i "s|FRONTEND_IMAGE|$FRONTEND_IMAGE|g" 2-Django-React/kubernetes/deployment.yaml
